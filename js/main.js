@@ -99,11 +99,21 @@ $(document).ready( function () {
       },
   ];
 
+
+  // Array colori da associare alle icone
+  const colors = [ 'blue', 'orange', 'purple'];
+  console.log(colors);
+
   // Icons container
   const container = $('.icons');
 
-  // Stampa icone
-  printIcons(icons, container);
+  // Stampa icone b/w
+  // printIcons(icons, container);
+
+  // Stampa icone colorate
+  const coloredIcons = colorIcons(icons, colors);
+  console.table(coloredIcons);
+  printIcons(coloredIcons, container);
 
 
 
@@ -115,20 +125,52 @@ $(document).ready( function () {
 // FUNZIONI
 // PRINT ICONS
 function printIcons(icons, container) {
-  // iteriamo sull'array e come parametro ho l'icona(=element)
+  // iterazione sull'array e come parametro usare l'icona(=element)
   icons.forEach((icon) => {
-    // destrutturo e creo le nuove variabili
-    const {family, prefix, name} = icon;
-    // cosa inserisco nel doc
+    // destrutturazione e creazione nuove variabili
+    const {family, prefix, name, color} = icon;
+    // cosa inserire nel doc
     const html =
     `<div class="icon padd-20">
-      <i class="${family} ${prefix}${name}"></i>
+      <i class="${family} ${prefix}${name}" style="color: ${color}"></i>
       <div class="title">
         ${name}
       </div>
     </div>`;
 
-    container.append(html)
+    container.append(html);
   });
 
+}
+
+// COLORED ICONS
+// quanti type ci sono e quali colori associare?
+function colorIcons(icons, colors) {
+  // Types
+  const types = getType(icons);
+    console.log(types);
+
+  // Assegnare color in base al type usando corrispondenza indici degli array
+  const coloredIcons = icons.map((icon) => {
+    const indexType = types.indexOf(icon.type);
+      return {
+        ...icon,
+        color: colors[indexType],
+      }
+  });
+
+  return coloredIcons;
+}
+
+// Ottieni ICONS TYPES
+function getType(icons) {
+  const types = [];
+  // iterazione per inserire nuovo type e verifica che non ci siano types ripetuti
+  icons.forEach((icon) => {
+      if(!types.includes(icon.type)) {
+        types.push(icon.type);
+      }
+  });
+
+  return types;
 }
