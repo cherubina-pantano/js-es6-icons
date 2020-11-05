@@ -115,16 +115,34 @@ $(document).ready( function () {
   console.table(coloredIcons);
   printIcons(coloredIcons, container);
 
+  // Filtra icone in base al tipo
+  const select = $('#type');
+  const types = getType(icons);
+  // generazione opzioni: serve per eseguire un'azione nel dom. Tante opzioni quanti sono i types
+  genOption(types, select);
+  // evento che viene generato al cambiare del valore della selezione
+  select.change(() => {
+    const selected = select.val();
+    console.log(selected);
 
+    const filteredIcons = filterIcons(coloredIcons, selected );
+    printIcons(filteredIcons, container);
 
+  });
 
 
 }); // <-- end doc ready
 
 
-// FUNZIONI
-// PRINT ICONS
+/*************************
+* FUNZIONI
+**************************/
+
+// ****** PRINT ICONS *******
 function printIcons(icons, container) {
+    // reset
+    container.html('');
+
   // iterazione sull'array e come parametro usare l'icona(=element)
   icons.forEach((icon) => {
     // destrutturazione e creazione nuove variabili
@@ -143,7 +161,7 @@ function printIcons(icons, container) {
 
 }
 
-// COLORED ICONS
+// ****** COLORED ICONS ******
 // quanti type ci sono e quali colori associare?
 function colorIcons(icons, colors) {
   // Types
@@ -162,7 +180,7 @@ function colorIcons(icons, colors) {
   return coloredIcons;
 }
 
-// Ottieni ICONS TYPES
+// ****** Ottieni ICONS TYPES ******
 function getType(icons) {
   const types = [];
   // iterazione per inserire nuovo type e verifica che non ci siano types ripetuti
@@ -173,4 +191,24 @@ function getType(icons) {
   });
 
   return types;
+}
+
+// Generazione opzioni per types
+function genOption(types, select) {
+    types.forEach( (option) =>{
+      select.append( `<option value"${option}">${option}</option>`);
+    });
+}
+
+// ****** FILTRO SELEZIONE ******
+function filterIcons(coloredIcons, selected) {
+    if(selected === 'all') {
+      return coloredIcons;
+    }
+    //  array filtrato
+    const filtered = coloredIcons.filter((icon) => {
+        return icon.type === selected;
+    });
+
+    return filtered;
 }
